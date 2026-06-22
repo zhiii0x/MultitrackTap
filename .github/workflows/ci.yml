@@ -12,54 +12,55 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-test:
-    name: Build & test
+  # The platform-agnostic recording core is pure Swift and builds on any recent
+  # toolchain, so test it on the older macOS versions real users run.
+  core:
+    name: Core (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
-      # Run every OS even if one fails, so we see the full picture.
       fail-fast: false
       matrix:
-        # The app targets macOS 14.4+; the dev machine is much newer, so test on
-        # the older OSes real users actually run. (macOS 13 is < 14.4, so omitted.)
-        os: [macos-15, macos-14]
+        os: [macos-14, macos-15]
     steps:
       - uses: actions/checkout@v4
-
-      # The app package is `swift-tools-version: 6.0`, which needs a Swift 6
-      # (Xcode 16+) toolchain. The default Xcode on macos-14 may be older.
-      - name: Select latest-stable Xcode (Swift 6)
-        uses: maxim-lobanov/setup-xcode@v1
+      - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-
-      - name: Toolchain versions
-        run: |
-          swift --version
-          xcodebuild -version
-          sw_vers
-
-      # Root package: the platform-agnostic recording core (Swift 5.9).
+      - name: Versions
+        run: swift --version && sw_vers
       - name: MultitrackCore — build & test
         run: |
           swift build
           swift test
 
-      # App package: SwiftUI app + Core Audio engine (Swift 6, depends on the
-      # root package via a path dependency).
+  # The app uses the macOS 26 "Liquid Glass" API (`glassEffect`), guarded with
+  # `if #available(macOS 26, *)` so it still RUNS on macOS 14.4+ — but the symbol
+  # only exists in the macOS 26 SDK, so BUILDING needs Xcode 26. The macos-15
+  # runner image ships it (macos-14's newest Xcode does not).
+  app:
+    name: App (macOS 26 SDK)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Versions
+        run: swift --version && xcodebuild -version && sw_vers
       - name: MultitrackTap app — build & test
         working-directory: app
         run: |
           swift build
           swift test
-
       # Smoke-test the headless engine entry points. On a CI runner nothing is
-      # producing audio, so these may legitimately find nothing and exit 0 or 1
-      # (e.g. --match throws "not found"); we only fail on a real crash (exit > 1,
-      # i.e. a signal). This catches link errors, missing symbols and launch
-      # crashes that the unit tests don't.
+      # producing audio, so these legitimately find nothing and exit 0 or 1
+      # (e.g. `--match` throws "not found" → 1). `set +e` is required because the
+      # step's default shell is `bash -e`, which would otherwise abort on that 1;
+      # we only fail on a real crash (exit > 1, i.e. a signal).
       - name: Headless engine smoke test
         working-directory: app
         run: |
+          set +e
           BIN="$(swift build --show-bin-path)/MultitrackTap"
           smoke() {
             "$@"
