@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- The ONLY entitlement a non-sandboxed audio app needs: Hardened Runtime
+         gates microphone access independently of the sandbox, so this is
+         required even though App Sandbox is off. Core Audio process taps need
+         NO special entitlement — they are gated by the kTCCServiceAudioCapture
+         grant the user approves (NSAudioCaptureUsageDescription, in Info.plist).
+         Do NOT add com.apple.security.app-sandbox here. -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+</dict>
+</plist>

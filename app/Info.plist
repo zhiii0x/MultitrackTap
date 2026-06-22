@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key><string>MultitrackTap</string>
+    <key>CFBundleIdentifier</key><string>com.github.zhiii0x.multitracktap</string>
+    <key>CFBundleName</key><string>Multitrack Tap</string>
+    <key>CFBundleDisplayName</key><string>Multitrack Tap</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
+    <key>CFBundleShortVersionString</key><string>0.1.4</string>
+    <key>CFBundleVersion</key><string>5</string>
+    <key>LSMinimumSystemVersion</key><string>14.4</string>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSMicrophoneUsageDescription</key><string>Multitrack Tap records your microphone as a separate track.</string>
+    <key>NSAudioCaptureUsageDescription</key><string>Multitrack Tap captures audio from the apps you choose, each as a separate track.</string>
+</dict>
+</plist>
