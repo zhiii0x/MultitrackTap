@@ -21,19 +21,19 @@ let package = Package(
     // also pins the runtime deployment floor to 14.4.
     platforms: [.macOS("14.4")],
     dependencies: [
-        // Parent package at the repo root.
-        .package(path: ".."),
+        // Parent package (MultitrackCore) at the repo root. Pin the dependency
+        // NAME explicitly so the package identity is stable regardless of the
+        // checkout folder: a plain `.package(path: "..")` derives the identity
+        // from the parent folder's name, which breaks every clone whose folder
+        // isn't named the maintainer's (GitHub checks out to ".../MultitrackTap";
+        // `git clone` makes a "MultitrackTap" folder — neither is "opensour").
+        .package(name: "MultitrackCore", path: ".."),
     ],
     targets: [
         .executableTarget(
             name: "MultitrackTap",
             dependencies: [
-                // SwiftPM derives the dependency's *package identity* from the
-                // directory name of the path dependency (here: "opensour"), NOT
-                // from the `name:` field in the parent Package.swift. The
-                // product is still "MultitrackCore"; only the `package:`
-                // identity differs.
-                .product(name: "MultitrackCore", package: "opensour"),
+                .product(name: "MultitrackCore", package: "MultitrackCore"),
             ]
         ),
         // Unit tests for the app layer. `@testable import MultitrackTap` reaches
@@ -42,7 +42,7 @@ let package = Package(
             name: "MultitrackTapTests",
             dependencies: [
                 "MultitrackTap",
-                .product(name: "MultitrackCore", package: "opensour"),
+                .product(name: "MultitrackCore", package: "MultitrackCore"),
             ]
         ),
     ]
