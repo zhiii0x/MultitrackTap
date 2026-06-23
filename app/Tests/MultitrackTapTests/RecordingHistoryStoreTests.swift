@@ -7,7 +7,11 @@ import XCTest
 @MainActor
 final class RecordingHistoryStoreTests: XCTestCase {
 
-    private var tempDir: URL!
+    // `nonisolated(unsafe)` so the nonisolated XCTest setUp/tearDown can set and
+    // clean it up while the class is @MainActor. Safe: written once in setUp and
+    // tests run serially, so there's no concurrent access. (Swift 6.0.x rejects
+    // accessing a main-actor property from the nonisolated setUp; 6.2 allowed it.)
+    nonisolated(unsafe) private var tempDir: URL!
 
     override func setUp() {
         super.setUp()
