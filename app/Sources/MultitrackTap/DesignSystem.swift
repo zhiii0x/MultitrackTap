@@ -88,6 +88,12 @@ extension View {
 
     @ViewBuilder
     private func cardBacking(shape: RoundedRectangle, tint: Color?) -> some View {
+        // `glassEffect` exists only in the macOS 26 SDK, so REFERENCE it only when
+        // compiling with a toolchain that ships it (Swift 6.2 = Xcode 26). Older
+        // Xcode (<= 16) compiles the #else branch and never sees the symbol, so
+        // the app still builds there. The inner `if #available` is the separate
+        // RUNTIME gate: a 26-SDK build still falls back to material on 14.4–25.
+        #if compiler(>=6.2)
         if #available(macOS 26.0, *) {
             if let tint {
                 Color.clear.glassEffect(.regular.tint(tint.opacity(0.20)), in: shape)
@@ -95,12 +101,22 @@ extension View {
                 Color.clear.glassEffect(.regular, in: shape)
             }
         } else {
-            if let tint {
-                shape.fill(.regularMaterial)
-                    .overlay(shape.fill(tint.opacity(0.16)))
-            } else {
-                shape.fill(.regularMaterial)
-            }
+            materialBacking(shape: shape, tint: tint)
+        }
+        #else
+        materialBacking(shape: shape, tint: tint)
+        #endif
+    }
+
+    /// The pre-glass material backing — used on macOS < 26, and whenever the app
+    /// is built with a toolchain older than the macOS 26 SDK.
+    @ViewBuilder
+    private func materialBacking(shape: RoundedRectangle, tint: Color?) -> some View {
+        if let tint {
+            shape.fill(.regularMaterial)
+                .overlay(shape.fill(tint.opacity(0.16)))
+        } else {
+            shape.fill(.regularMaterial)
         }
     }
 }

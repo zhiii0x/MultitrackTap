@@ -12,46 +12,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The platform-agnostic recording core is pure Swift and builds on any recent
-  # toolchain, so test it on the older macOS versions real users run.
-  core:
-    name: Core (${{ matrix.os }})
+  build-test:
+    name: Build & test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
+      # Run every OS even if one fails, so we see the full picture. macОS 14 uses
+      # an older Xcode (material card backing); macOS 15 ships the macOS 26 SDK
+      # (Liquid Glass backing). Both must build — that's the point of the matrix.
       fail-fast: false
       matrix:
         os: [macos-14, macos-15]
     steps:
       - uses: actions/checkout@v4
+
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
+
       - name: Versions
-        run: swift --version && sw_vers
+        run: swift --version && xcodebuild -version && sw_vers
+
+      # Root package: the platform-agnostic recording core (Swift 5.9).
       - name: MultitrackCore — build & test
         run: |
           swift build
           swift test
 
-  # The app uses the macOS 26 "Liquid Glass" API (`glassEffect`), guarded with
-  # `if #available(macOS 26, *)` so it still RUNS on macOS 14.4+ — but the symbol
-  # only exists in the macOS 26 SDK, so BUILDING needs Xcode 26. The macos-15
-  # runner image ships it (macos-14's newest Xcode does not).
-  app:
-    name: App (macOS 26 SDK)
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
-      - name: Versions
-        run: swift --version && xcodebuild -version && sw_vers
+      # App package: SwiftUI app + Core Audio engine (Swift 6, depends on the
+      # root package via a path dependency).
       - name: MultitrackTap app — build & test
         working-directory: app
         run: |
           swift build
           swift test
+
       # Smoke-test the headless engine entry points. On a CI runner nothing is
       # producing audio, so these legitimately find nothing and exit 0 or 1
       # (e.g. `--match` throws "not found" → 1). `set +e` is required because the
