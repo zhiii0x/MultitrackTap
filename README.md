@@ -14,6 +14,7 @@ English · [繁體中文](README.zh-TW.md)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![macOS 14.4+](https://img.shields.io/badge/macOS-14.4%2B-black?logo=apple)
 ![Swift](https://img.shields.io/badge/Swift-SwiftUI%20%2B%20Core%20Audio-orange?logo=swift)
+![CI](https://github.com/zhiii0x/MultitrackTap/actions/workflows/ci.yml/badge.svg)
 
 <br>
 
@@ -68,11 +69,23 @@ Free and open source, native to macOS.
 
 ## Status
 
-**Active development (pre-release).** The recording engine, UI, and Reaper export
-work today. A signed + notarized DMG and a Homebrew cask are planned. For now,
-**build from source**.
+**Pre-release, but usable today** — the recording engine, UI, and Reaper export
+work end to end, shipped as a signed + notarized DMG.
+
+## Install
+
+1. Download **Multitrack Tap.dmg** from the [**latest release**](https://github.com/zhiii0x/MultitrackTap/releases/latest).
+2. Open it and **drag Multitrack Tap to your Applications folder**.
+3. Launch it. On first use, grant **Microphone** and **System Audio Recording**
+   (System Settings → Privacy & Security), then **quit and reopen once** so macOS
+   applies the System Audio Recording grant.
+
+Signed + notarized with a Developer ID, so it opens with no Gatekeeper warning.
+Prefer to build it yourself? See below.
 
 ## Build from source
+
+Requires **Xcode 16 or later** (Swift 6).
 
 ```bash
 git clone https://github.com/zhiii0x/MultitrackTap.git
