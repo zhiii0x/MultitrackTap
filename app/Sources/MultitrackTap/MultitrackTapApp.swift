@@ -16,6 +16,9 @@ struct MultitrackTapApp: App {
     /// shared (via `.environment`) with the record window, the history window,
     /// and the view model that appends to it on each successful stop.
     @State private var history = RecordingHistoryStore()
+    /// First-launch onboarding state, shared with `RootView` and the
+    /// "Show Welcome…" command so both drive the same instance.
+    @State private var onboarding = OnboardingModel()
 
     init() {
         // Register Settings defaults before any view (or the view model) reads
@@ -31,9 +34,10 @@ struct MultitrackTapApp: App {
 
     var body: some Scene {
         WindowGroup("Multitrack Tap", id: "main") {
-            RecordView()
+            RootView()
                 .environment(model)
                 .environment(history)
+                .environment(onboarding)
         }
         .defaultSize(width: 480, height: 560)
         .windowResizability(.contentMinSize)
@@ -41,6 +45,10 @@ struct MultitrackTapApp: App {
             // Replace the stock "About Multitrack Tap" with our branded window.
             CommandGroup(replacing: .appInfo) {
                 AboutMenuCommand()
+            }
+            // Replay the first-launch onboarding on demand.
+            CommandGroup(after: .appInfo) {
+                ShowWelcomeMenuCommand(onboarding: onboarding)
             }
             // ⌘0 opens the Recordings window, mirroring the in-window button.
             CommandGroup(after: .windowList) {
@@ -101,6 +109,20 @@ private struct AboutMenuCommand: View {
     var body: some View {
         Button("About Multitrack Tap") {
             openWindow(id: "about")
+        }
+    }
+}
+
+/// The "Show Welcome…" app-menu item. Replays first-launch onboarding without
+/// clearing the completed flag, and brings the main window forward.
+private struct ShowWelcomeMenuCommand: View {
+    let onboarding: OnboardingModel
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button("Show Welcome…") {
+            onboarding.replay()
+            openWindow(id: "main")
         }
     }
 }
