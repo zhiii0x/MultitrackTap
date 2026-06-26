@@ -15,6 +15,7 @@ English · [繁體中文](README.zh-TW.md)
 ![macOS 14.4+](https://img.shields.io/badge/macOS-14.4%2B-black?logo=apple)
 ![Swift](https://img.shields.io/badge/Swift-SwiftUI%20%2B%20Core%20Audio-orange?logo=swift)
 ![CI](https://github.com/zhiii0x/MultitrackTap/actions/workflows/ci.yml/badge.svg)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/nono.today)
 
 <br>
 
@@ -134,6 +135,12 @@ open-source **[AudioCap](https://github.com/insidegui/AudioCap)** is what made t
 Core Audio process-tap work in this project possible — Multitrack Tap's tap setup
 and audio-process enumeration are adapted from it, under the
 [BSD-2-Clause license](THIRD-PARTY-LICENSES.md). Thank you, Guilherme.
+
+## Support
+
+If Multitrack Tap is useful to you, you can support its development:
+
+<a href="https://buymeacoffee.com/nono.today"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="44" alt="Buy Me a Coffee"></a>
 
 ## License
 
