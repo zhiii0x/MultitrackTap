@@ -140,6 +140,7 @@ struct OnboardingView: View {
             } else {
                 Button("Allow", action: action)
                     .buttonStyle(.bordered)
+                    .tint(.orange)
             }
         }
         .padding(14)
