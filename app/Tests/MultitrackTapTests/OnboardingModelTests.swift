@@ -47,6 +47,10 @@ final class OnboardingModelTests: XCTestCase {
         model.replay()
         XCTAssertTrue(model.isPresented)
 
+        // Completing the replayed run dismisses it again.
+        model.complete()
+        XCTAssertFalse(model.isPresented)
+
         // Flag is still set: a fresh model is dismissed.
         let reloaded = OnboardingModel(defaults: defaults)
         XCTAssertFalse(reloaded.isPresented)
