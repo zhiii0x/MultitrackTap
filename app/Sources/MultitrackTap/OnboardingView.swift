@@ -96,10 +96,12 @@ struct OnboardingView: View {
                 granted: model.audioCapturePermission == .allowed,
                 action: requestAudioCapture)
 
-            Text("macOS may ask you to restart the app once — we'll do that for you at the end.")
-                .font(.caption)
-                .foregroundStyle(.orange)
-                .fixedSize(horizontal: false, vertical: true)
+            if model.audioCapturePermission != .allowed {
+                Text("macOS may ask you to restart the app once — we'll do that for you at the end.")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             Spacer()
 
