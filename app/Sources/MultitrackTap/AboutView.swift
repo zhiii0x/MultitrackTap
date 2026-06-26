@@ -8,6 +8,7 @@ struct AboutView: View {
     // Update this if the public repo location changes.
     private let repoURL = URL(string: "https://github.com/zhiii0x/MultitrackTap")!
     private let licenseURL = URL(string: "https://opensource.org/license/mit")!
+    private let xURL = URL(string: "https://x.com/zhiii0x")!
 
     var body: some View {
         VStack(spacing: 14) {
@@ -30,6 +31,7 @@ struct AboutView: View {
 
             HStack(spacing: 18) {
                 Link("GitHub", destination: repoURL)
+                Link("X", destination: xURL)
                 Link("MIT License", destination: licenseURL)
             }
             .font(.callout)

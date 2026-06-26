@@ -17,6 +17,9 @@ app/.build/
 # Local working docs — kept on disk, not part of the public repo
 docs/
 
+# Brainstorm / design working artifacts (visual companion mockups)
+.superpowers/
+
 # Release artifacts (built locally, attached to GitHub Releases — not committed)
 *.dmg
 *.zip
